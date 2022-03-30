@@ -4,9 +4,6 @@
 
 import sys
 import math
-import time
-
-start_time = time.time()
 
 # Función solución
 def torreTp(pisActual, cuarActual, numPisos, numCuartos, numPortales, energia, portales):
@@ -61,5 +58,3 @@ def main():
 
 
 main()
-
-print("--- %s seconds ---" % (time.time() - start_time))
