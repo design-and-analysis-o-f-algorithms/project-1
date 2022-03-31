@@ -16,12 +16,14 @@ def torreTp(numPisos, numCuartos, energia, portales, pisActual, cuarActual, cost
         # Se verifica cada portal en el piso actual y los caminos que salen de este
         for portal in portales[pisActual]:
             portalKey = str(pisActual) + ',' + str(portal[0])
+            #Si no se recorrio el camino se recorre recursivamente
             if portalKey not in costosMin:
                 costo = (torreTp(numPisos, numCuartos, energia, portales, portal[1], portal[2], costosMin) +
                         (abs(cuarActual - (portal[0]))) * energia[pisActual])
+            #Si se recorrio el camino se saca el costo del diccionario
             else:
                 costo = costosMin[portalKey]
-            if costo == 0:
+            if costo == 0:#Si el costo el 0 ese sera ya el costo menor ya que no hay costo negativo
                 return 0
             if costo < minimo:  # Se retorna el coste mínimo de todos estos posibles caminos
                 minimo = costo
@@ -36,7 +38,7 @@ def main():
         data = list(map(int, (input().split())))
         numPisos, numCuartos, numPortales = data[0], data[1], data[2]
         energia, portales = list(map(int, (input().split()))), {}
-        # Se consiguen los portales y se ingresan en la lista 'portales'
+        # Se consiguen los portales y se ingresan en un diccionario 'portales' cuya llave es el piso de inicio
         for _ in range(numPortales):
             infoPortal = input().split()
             piso_i, cuarto_i, piso_f, cuarto_f = tuple(int(e) for e in infoPortal)
