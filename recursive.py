@@ -6,7 +6,7 @@ import sys
 import math
 
 # Función solución
-def torreTp(pisActual, cuarActual, numPisos, numCuartos, numPortales, energia, portales):
+def torreTp(pisActual, cuarActual, numPisos, numCuartos, energia, portales):
     if pisActual == numPisos - 1:  # Caso base: si nos encontramos en el piso final
         return (numCuartos - 1 - cuarActual) * energia[pisActual]
     # Caso base: no hay portales en el piso actual (dicho camino no es solución)
@@ -17,27 +17,23 @@ def torreTp(pisActual, cuarActual, numPisos, numCuartos, numPortales, energia, p
     minimo = math.inf
     # Se verifica cada portal en el piso actual y los caminos que salen de este
     for portal in portales[pisActual]:
-            coste = torreTp(portal[1], portal[2], numPisos, numCuartos, numPortales, energia, portales) + \
-                    (abs(cuarActual - (portal[0]))) * energia[pisActual]
-            if coste == 0:
-                return 0  
-            if coste < minimo:  # Se retorna el coste mínimo de todos estos posibles caminos
-                minimo = coste
+        coste = (torreTp(portal[1], portal[2], numPisos, numCuartos, energia, portales) +
+                (abs(cuarActual - (portal[0]))) * energia[pisActual])
+        if coste == 0:
+            return 0
+        if coste < minimo:  # Se retorna el coste mínimo de todos estos posibles caminos
+            minimo = coste
     return minimo
 
 
 def main():
-    # Input y llamado de función solución
     input = sys.stdin.readline
-    numberCases = int(input())  # Numero de casos de prueba
+    numberCases = int(input())  # Número de casos de prueba
     solutions = []
     for c in range(numberCases):
         data = list(map(int, (input().split())))
-        numPisos = data[0]
-        numCuartos = data[1]
-        numPortales = data[2]
-        energia = list(map(int, (input().split())))
-        portales = {}
+        numPisos, numCuartos, numPortales = data[0], data[1], data[2]
+        energia, portales = list(map(int, (input().split()))), {}
         # Se consiguen los portales y se ingresan en la lista 'portales'
         for _ in range(numPortales):
             infoPortal = input().split()
@@ -46,12 +42,11 @@ def main():
                 portales[piso_i - 1] = []
             portales[piso_i - 1].append([cuarto_i - 1, piso_f - 1, cuarto_f - 1])
         # Se llama a la función solución con los datos anteriores
-        sol = torreTp(0, 0, numPisos, numCuartos, numPortales, energia, portales)
+        sol = torreTp(0, 0, numPisos, numCuartos, energia, portales)
         if sol == math.inf:  # Si el coste es infinito entonces la solución no existe
             solutions.append("NO EXISTE")
         else:  # Se agrega la solución a una lista de soluciones
             solutions.append(sol)
-
     # Output
     for i in solutions:
         print(i)
