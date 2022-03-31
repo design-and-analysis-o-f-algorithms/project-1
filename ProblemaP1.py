@@ -6,24 +6,26 @@ import sys
 import math
 
 # Función solución
-def torreTp(pisActual, cuarActual, numPisos, numCuartos, energia, portales):
+def torreTp(numPisos, numCuartos, energia, portales, pisActual, cuarActual, costosMin):
     if pisActual == numPisos - 1:  # Caso base: si nos encontramos en el piso final
         return (numCuartos - 1 - cuarActual) * energia[pisActual]
-    # Caso base: no hay portales en el piso actual (dicho camino no es solución)
-    if pisActual not in portales:
+    elif pisActual not in portales: # Caso base: no hay portales en el piso actual (dicho camino no es solución)
         return math.inf
-
-    # Variable iniciada en infinito que da el coste del camino con coste mínimo
-    minimo = math.inf
-    # Se verifica cada portal en el piso actual y los caminos que salen de este
-    for portal in portales[pisActual]:
-        coste = (torreTp(portal[1], portal[2], numPisos, numCuartos, energia, portales) +
-                (abs(cuarActual - (portal[0]))) * energia[pisActual])
-        if coste == 0:
-            return 0
-        if coste < minimo:  # Se retorna el coste mínimo de todos estos posibles caminos
-            minimo = coste
-    return minimo
+    else:
+        minimo = math.inf  # Variable iniciada en infinito que da el coste del camino con coste mínimo
+        # Se verifica cada portal en el piso actual y los caminos que salen de este
+        for portal in portales[pisActual]:
+            portalKey = str(pisActual) + ',' + str(portal[0])
+            if portalKey not in costosMin:
+                costo = (torreTp(numPisos, numCuartos, energia, portales, portal[1], portal[2], costosMin) +
+                        (abs(cuarActual - (portal[0]))) * energia[pisActual])
+            else:
+                costo = costosMin[portalKey]
+            if costo == 0:
+                return 0
+            if costo < minimo:  # Se retorna el coste mínimo de todos estos posibles caminos
+                minimo = costo
+        return minimo
 
 
 def main():
@@ -42,7 +44,7 @@ def main():
                 portales[piso_i - 1] = []
             portales[piso_i - 1].append([cuarto_i - 1, piso_f - 1, cuarto_f - 1])
         # Se llama a la función solución con los datos anteriores
-        sol = torreTp(0, 0, numPisos, numCuartos, energia, portales)
+        sol = torreTp(numPisos, numCuartos, energia, portales, 0, 0, {})
         if sol == math.inf:  # Si el coste es infinito entonces la solución no existe
             solutions.append("NO EXISTE")
         else:  # Se agrega la solución a una lista de soluciones
