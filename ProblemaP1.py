@@ -17,12 +17,15 @@ def torreTp(numPisos, numCuartos, energia, portales, pisActual, cuarActual, cost
         for portal in portales[pisActual]:
             portalKey = str(pisActual) + ',' + str(portal[0])
             #Si no se recorrio el camino se recorre recursivamente
-            if portalKey not in costosMin:
+            if not(portalKey  in costosMin):
                 costo = (torreTp(numPisos, numCuartos, energia, portales, portal[1], portal[2], costosMin) +
                         (abs(cuarActual - (portal[0]))) * energia[pisActual])
+                #Se guarda el camino recorrido al entrar ese portal (sin contar el costo para ir a ese portal)
+                costosMin[portalKey]=costo-(abs(cuarActual - (portal[0]))) * energia[pisActual]
             #Si se recorrio el camino se saca el costo del diccionario
             else:
-                costo = costosMin[portalKey]
+                #El costo es el coste del camino al entrar en ese portal + el coste para moverse a dicho portal
+                costo = costosMin[portalKey]+(abs(cuarActual - (portal[0]))) * energia[pisActual]
             if costo == 0:#Si el costo el 0 ese sera ya el costo menor ya que no hay costo negativo
                 return 0
             if costo < minimo:  # Se retorna el coste mínimo de todos estos posibles caminos
