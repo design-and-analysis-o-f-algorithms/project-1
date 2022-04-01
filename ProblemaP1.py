@@ -9,24 +9,25 @@ import math
 def torreTp(numPisos, numCuartos, energia, portales, pisActual, cuarActual, costosMin):
     if pisActual == numPisos - 1:  # Caso base: si nos encontramos en el piso final
         return (numCuartos - 1 - cuarActual) * energia[pisActual]
-    elif pisActual not in portales: # Caso base: no hay portales en el piso actual (dicho camino no es solución)
+    # Caso base: no hay portales en el piso actual (dicho camino no es solución)
+    elif pisActual not in portales:
         return math.inf
     else:
-        minimo = math.inf  # Variable iniciada en infinito que da el coste del camino con coste mínimo
+        # Variable iniciada en infinito que da el coste del camino con coste mínimo
+        minimo = math.inf
         # Se verifica cada portal en el piso actual y los caminos que salen de este
         for portal in portales[pisActual]:
             portalKey = str(pisActual) + ',' + str(portal[0])
-            #Si no se recorrio el camino se recorre recursivamente
-            if not(portalKey  in costosMin):
+            # Si no se recorrió el camino se recorre recursivamente
+            if portalKey not in costosMin:
                 costo = (torreTp(numPisos, numCuartos, energia, portales, portal[1], portal[2], costosMin) +
-                        (abs(cuarActual - (portal[0]))) * energia[pisActual])
-                #Se guarda el camino recorrido al entrar ese portal (sin contar el costo para ir a ese portal)
-                costosMin[portalKey]=costo-(abs(cuarActual - (portal[0]))) * energia[pisActual]
-            #Si se recorrio el camino se saca el costo del diccionario
-            else:
-                #El costo es el coste del camino al entrar en ese portal + el coste para moverse a dicho portal
-                costo = costosMin[portalKey]+(abs(cuarActual - (portal[0]))) * energia[pisActual]
-            if costo == 0:#Si el costo el 0 ese sera ya el costo menor ya que no hay costo negativo
+                         (abs(cuarActual - (portal[0]))) * energia[pisActual])
+                # Se guarda el camino recorrido al entrar ese portal (sin contar el costo para ir a ese portal)
+                costosMin[portalKey] = costo - (abs(cuarActual - (portal[0]))) * energia[pisActual]
+            else:  # Si se recorrió el camino se saca el costo del diccionario
+                # El costo es el coste del camino al entrar en ese portal + el coste para moverse a dicho portal
+                costo = costosMin[portalKey] + (abs(cuarActual - (portal[0]))) * energia[pisActual]
+            if costo == 0:  # Si el costo el 0 ese sera ya el costo menor ya que no hay costo negativo
                 return 0
             if costo < minimo:  # Se retorna el coste mínimo de todos estos posibles caminos
                 minimo = costo
